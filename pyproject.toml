@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "chiralfinder"
+version = "0.1.0"
+description = ""
+authors = ["han.run.jiangming@sjtu.edu.cn"]
+maintainers = ["han.run.jiangming@sjtu.edu.cn"]
+license = "MIT"
+readme = "README.md"
+homepage = ""
+repository = "https://github.com/Meteor-han/chiralfinder/"
+documentation = ""
+keywords = [
+    "Chirality"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+rdkit = "^2024.3.3"
+numpy = "^1.26.4"
+tqdm = "^4.65.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+run = "wsgi:main"
+
+[tool.poetry.urls]
+issues = "https://github.com/Meteor-han/chiralfinder/issues"
