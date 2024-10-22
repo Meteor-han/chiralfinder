@@ -3,9 +3,12 @@ name = "chiralfinder"
 version = "0.1.0"
 description = "The chiralfinder package."
 authors = [
-  { name="Meteor-han", email="han.run.jiangming@qq.com" },
-]
-maintainers = ["han.run.jiangming@qq.com"]
+  "Runhan Shi <han.run.jiangming@qq.com>",
+  ]
+maintainers = [
+    "Runhan Shi <han.run.jiangming@qq.com>",
+    "Gufeng Yu <jm5820zz@sjtu.edu.cn>",
+    ]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/Meteor-han/chiralfinder/"
