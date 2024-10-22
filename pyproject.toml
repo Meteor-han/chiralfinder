@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/Meteor-han/chiralfinder/"
 repository = "https://github.com/Meteor-han/chiralfinder/"
-documentation = ""
+documentation = "https://github.com/Meteor-han/chiralfinder/"
 keywords = [
     "Chirality"
 ]

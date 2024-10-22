@@ -43,7 +43,7 @@ You will get the images of two molecules with predicted chiral axes in the folde
 [(5,)] [(9, 10)]
 ```
 
-<img src="./img_axial/0.png" alt="0" style="zoom:40%;" /><img src="./img_axial/1.png" alt="1" style="zoom:40%;" />
+<img src="./img_axial/0.png" alt="0" style="zoom:20%;" /><img src="./img_axial/1.png" alt="1" style="zoom:20%;" />
 
 You will get the prediction of one molecule for central chirality.
 
