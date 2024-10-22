@@ -1,8 +1,10 @@
 [tool.poetry]
 name = "chiralfinder"
 version = "0.1.0"
-description = ""
-authors = ["han.run.jiangming@qq.com"]
+description = "The chiralfinder package."
+authors = [
+  { name="Meteor-han", email="han.run.jiangming@qq.com" },
+]
 maintainers = ["han.run.jiangming@qq.com"]
 license = "MIT"
 readme = "README.md"
