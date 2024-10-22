@@ -1,5 +1,5 @@
 # Quadrupole Matrix, spiral atom
-from quadrupole_utils import *
+from .quadrupole_utils import *
 
 
 class ChiralAxialType1(ChiralBase):

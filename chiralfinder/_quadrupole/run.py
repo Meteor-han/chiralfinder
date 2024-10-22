@@ -24,21 +24,29 @@ class ChiralFinder:
         if input_type == "SMILES":
             for s in input_:
                 mol = Chem.MolFromSmiles(s)
+                mol = Chem.AddHs(mol)
                 AllChem.EmbedMolecule(mol, maxAttempts=100)
-                mol = Chem.AddHs(mol, addCoords=True)
                 self.mols.append(mol)
         elif input_type == "molecules":
             for mol in input_:
+                mol = Chem.AddHs(mol)
                 if mol.GetNumConformers() == 0:
                     AllChem.EmbedMolecule(mol, maxAttempts=100)
-                mol = Chem.AddHs(mol, addCoords=True)
                 self.mols.append(mol)
         elif input_type == "sdf":
-            r = Chem.SDMolSupplier(input_)
-            for mol in tqdm(r):
+            for sdf in input_:
+                r = Chem.SDMolSupplier(sdf)
+                for mol in tqdm(r):
+                    mol = Chem.AddHs(mol)
+                    if mol.GetNumConformers() == 0:
+                        AllChem.EmbedMolecule(mol, maxAttempts=100)
+                    self.mols.append(mol)
+        elif input_type == "mol":
+            for mol_p in input_:
+                mol = Chem.MolFromMolFile(mol_p, removeHs=False)
+                mol = Chem.AddHs(mol)
                 if mol.GetNumConformers() == 0:
                     AllChem.EmbedMolecule(mol, maxAttempts=100)
-                mol = Chem.AddHs(mol, addCoords=True)
                 self.mols.append(mol)
         else:
             warnings.warn("Invalid input format!")
@@ -49,6 +57,29 @@ class ChiralFinder:
         for i, mol_original in enumerate(tqdm(self.mols)):
             self.res_central.append(self.center_class(mol_original).get_chi_mat())
         return self.res_central
+
+    def draw_res_center(self, dir_path="./img_center", size=(500, 500), with_index=False):
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+        for i, mol in enumerate(tqdm(self.mols)):
+            # without Hs, remove conformation
+            mol = Chem.RemoveHs(mol)
+            mol.RemoveAllConformers()
+            if with_index:
+                mol = self.mol_with_atom_index(mol)
+            hit_ats = self.res_central[i]["chiral id"]
+            colours = [(0., 1.0, 0.)]
+            atom_cols = {}
+            for j, at in enumerate(hit_ats):
+                atom_cols[at] = colours[0]
+
+            d = rdMolDraw2D.MolDraw2DCairo(size[0], size[1])
+            rdMolDraw2D.PrepareAndDrawMolecule(d, mol, highlightAtoms=hit_ats,
+                                               highlightAtomColors=atom_cols,
+                                               )
+            d.FinishDrawing()
+
+            d.WriteDrawingText(os.path.join(dir_path, f"{i}.png"))
 
     def get_axial(self):
         if self.res_axial["merge"]:
@@ -64,17 +95,25 @@ class ChiralFinder:
                 for i in range(len(res_o["chiral axes"])):
                     if res_o["chiral axes"][i] not in temp_["chiral axes"] and res_o["chiral axes"][i][::-1] not in temp_["chiral axes"]:
                         temp_["chiral axes"].append(res_o["chiral axes"][i])
+                        """for spiral chain, just repeat the res for end atoms, it does not matter"""
+                        if len(res_o["quadrupole matrix"]) <= i:
+                            i = 0
                         temp_["quadrupole matrix"].append(res_o["quadrupole matrix"][i])
                         temp_["determinant"].append(res_o["determinant"][i])
                         temp_["sign"].append(res_o["sign"][i])
             self.res_axial["merge"].append(temp_)
-            
+
         return self.res_axial["merge"]
 
-    def draw_res_axial(self, dir_path="./img_axial", size=(500, 500)):
+    def draw_res_axial(self, dir_path="./img_axial", size=(500, 500), with_index=False):
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         for i, mol in enumerate(tqdm(self.mols)):
+            # without Hs, remove conformation
+            mol = Chem.RemoveHs(mol)
+            mol.RemoveAllConformers()
+            if with_index:
+                mol = self.mol_with_atom_index(mol)
             labels = self.res_axial["merge"][i]["chiral axes"]
             atoms = mol.GetAtoms()
             hit_ats = []
@@ -105,7 +144,6 @@ class ChiralFinder:
             for j, bd in enumerate(hit_bonds):
                 bond_cols[bd] = colours[0]
 
-            # d = rdMolDraw2D.MolDraw2DSVG(500, 500)
             d = rdMolDraw2D.MolDraw2DCairo(size[0], size[1])
             rdMolDraw2D.PrepareAndDrawMolecule(d, mol, highlightAtoms=hit_ats,
                                                 highlightAtomColors=atom_cols,
@@ -115,21 +153,8 @@ class ChiralFinder:
 
             d.WriteDrawingText(os.path.join(dir_path, f"{i}.png"))
 
-    def draw_res_center(self, dir_path="./img_center", size=(500, 500)):
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-        for i, mol in enumerate(tqdm(self.mols)):
-            hit_ats = self.res_central[i]["chiral id"]
-            colours = [(0., 1.0, 0.)]
-            atom_cols = {}
-            for j, at in enumerate(hit_ats):
-                atom_cols[at] = colours[0]
-
-            # d = rdMolDraw2D.MolDraw2DSVG(500, 500)
-            d = rdMolDraw2D.MolDraw2DCairo(size[0], size[1])
-            rdMolDraw2D.PrepareAndDrawMolecule(d, mol, highlightAtoms=hit_ats,
-                                               highlightAtomColors=atom_cols,
-                                               )
-            d.FinishDrawing()
-
-            d.WriteDrawingText(os.path.join(dir_path, f"{i}.png"))
+    # add index to the graph
+    def mol_with_atom_index(self, mol):
+        for atom in mol.GetAtoms():
+            atom.SetAtomMapNum(atom.GetIdx())
+        return mol

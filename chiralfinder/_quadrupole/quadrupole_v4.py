@@ -1,4 +1,4 @@
-from quadrupole_utils import *
+from .quadrupole_utils import *
 
 
 class ChiralAxialType4(ChiralBase):

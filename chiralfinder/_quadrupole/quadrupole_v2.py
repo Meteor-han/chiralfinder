@@ -1,5 +1,5 @@
 # spiral chain
-from quadrupole_utils import *
+from .quadrupole_utils import *
 
 
 class ChiralAxialType2(ChiralBase):
@@ -34,7 +34,7 @@ class ChiralAxialType2(ChiralBase):
             whiles_cnt[0] += 1
             if whiles_cnt[0] > 200:
                 warnings.warn("v2 1st more than 200 times")
-                exit()
+                return []
             bonds_chain_2 = []
             for i in range(len(bonds_chain_1)):
                 k = 0
@@ -65,7 +65,7 @@ class ChiralAxialType2(ChiralBase):
             whiles_cnt[1] += 1
             if whiles_cnt[1] > 200:
                 warnings.warn("v2 2nd more than 200 times")
-                exit()
+                return []
             bonds_chain_2 = []
             for i in range(len(bonds_chain_1)):
                 k = 0
@@ -109,7 +109,7 @@ class ChiralAxialType2(ChiralBase):
             whiles_cnt[0] += 1
             if whiles_cnt[0] > 200:
                 warnings.warn("v2 3rd more than 200 times")
-                exit()
+                return []
             chain_2 = []
             for i in range(len(chain_1)):
                 k = 0
@@ -138,7 +138,7 @@ class ChiralAxialType2(ChiralBase):
             whiles_cnt[1] += 1
             if whiles_cnt[1] > 200:
                 warnings.warn("v2 4th more than 200 times")
-                exit()
+                return []
             chain_2 = []
             for i in range(len(chain_1)):
                 k = 0
@@ -180,7 +180,7 @@ class ChiralAxialType2(ChiralBase):
                             if j in list(k):
                                 chain_atom.extend(list(k))
 
-                    chain_atom = list(set(chain_atom))  # 获得相应螺环链所包含所有原子
+                    chain_atom = list(set(chain_atom))  # get all atoms about the spiral chain
 
                     for bonds_chain in bonds_chain_2_:
                         # print(bonds_chain)
@@ -194,34 +194,34 @@ class ChiralAxialType2(ChiralBase):
                     # print(chain_atom)
                     chain_boundary = []
 
-                    for idx in chain_atom:  # 对某一螺环链的所有原子
+                    for idx in chain_atom:  # all atoms in a spiral chain
                         atom = self.atoms[idx]
                         atom_nei = atom.GetNeighbors()
                         atom_out_nei = []
                         for nei in atom_nei:
                             if nei.GetIdx() not in chain_atom:
-                                atom_out_nei.append(nei.GetIdx())  # 获取螺环链边界原子的界外邻居
-                        # 比较界外邻居是否互异
+                                atom_out_nei.append(nei.GetIdx())  # outside neighbors of the end atoms
+                        # the same or not
                         if len(atom_out_nei) == 2:
                             if self.CIP_list[atom_out_nei[0]] > self.CIP_list[atom_out_nei[1]]:
-                                end_atom = [idx, atom_out_nei]  # 一个边界原子及界外邻居
+                                end_atom = [idx, atom_out_nei]  # one end atom and its neighbors
                                 chain_boundary.append(end_atom)
                             elif self.CIP_list[atom_out_nei[0]] < self.CIP_list[atom_out_nei[1]]:
                                 atom_out_nei = atom_out_nei[::-1]
-                                end_atom = [idx, atom_out_nei]  # 一个边界原子及界外邻居
+                                end_atom = [idx, atom_out_nei]  # another end atom and its neighbors
                                 chain_boundary.append(end_atom)
                     if len(chain_boundary) >= 2:
                         end_atoms.append([chain_temt, chain_boundary])
         '''
         end_atoms= [
-                    [[螺原子1],[边界1，[大邻居，小邻居]],[边界2,[大邻居，小邻居]]...]
-                    [[螺原子2],[边界1，[大邻居，小邻居]],[边界2,[大邻居，小邻居]]...]
+                    [[spiral atom1],[end1,[higher rank neighbor,lower xxx]],[end2,[higher rank neighbor,lower xxx]]...]
+                    [[spiral atom2],[end1,[higher rank neighbor,lower xxx]],[end2,[higher rank neighbor,lower xxx]]...]
                     ...
                    ]
         '''
         return end_atoms
 
-    # 确定手性矩阵
+    # get the chirality matrix
     def get_chi_mat(self):
         spi_ = self.find_spiral_atoms()
         chain_ = self.get_spi_chain(spi_)
@@ -252,7 +252,7 @@ class ChiralAxialType2(ChiralBase):
                         c = cri_atoms_cor[3] - cri_atoms_cor[4]
                         mat = np.array([a, b, c])
                         mat_confs.append(mat)
-                        # 若尽头原子上基团互异但共面，则表明不存在轴手性, sign_为0
+                        # in the same plane or not
                         det_, sign_ = self.criterion(mat)
                         det_confs.append(det_)
                         sign_confs.append(sign_)
@@ -260,14 +260,10 @@ class ChiralAxialType2(ChiralBase):
                     dets.append(det_confs)
                     signs.append(sign_confs)
 
-        '''
-        spi_chi_cri= [
-                    [[螺原子1],[边界1,边界2,手性特征1],[边界1,边界3,手性特征2]...]
-                    [[螺原子2],[边界1,边界2,手性特征1],[边界1,边界3,手性特征2]...]
-                    ...
-                   ]
-        ''' 
         axes_label = []
-        for one in chi_spi_:
-            axes_label.extend(one)
+        for i in range(len(chi_spi_)):
+            axes_label.extend(chi_spi_[i])
+            axes_label.append(ends_[i][0][0])
+            axes_label.append(ends_[i][1][0])
+        """axes atoms, more than other results!"""
         return {"spiral id": chi_spi_, "ends": ends_, "chiral axes": [(one,) for one in set(axes_label)], "quadrupole matrix": mats, "determinant": dets, "sign": signs}

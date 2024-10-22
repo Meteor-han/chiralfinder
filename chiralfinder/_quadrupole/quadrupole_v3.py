@@ -1,5 +1,5 @@
 # Allene-like
-from quadrupole_utils import *
+from .quadrupole_utils import *
 
 
 class ChiralAxialType3(ChiralBase):
@@ -36,7 +36,7 @@ class ChiralAxialType3(ChiralBase):
             whiles_cnt[0] += 1
             if whiles_cnt[0] > 200:
                 warnings.warn("v3 1st more than 200 times")
-                exit()
+                return []
             bonds_chain_2 = []
             for i in range(len(bonds_chain_1)):
                 k = 0
@@ -65,7 +65,7 @@ class ChiralAxialType3(ChiralBase):
             whiles_cnt[1] += 1
             if whiles_cnt[1] > 200:
                 warnings.warn("v3 2nd more than 200 times")
-                exit()
+                return []
             bonds_chain_2 = []
             for i in range(len(bonds_chain_1)):
                 k = 0
@@ -132,10 +132,10 @@ class ChiralAxialType3(ChiralBase):
 
         '''
         cum_ene_end=[
-                        [轴端1,[大邻居,小邻居],轴端2,[大邻居,小邻居]]#累积烯烃1
-                        [轴端1,[大邻居,小邻居],轴端2,[大邻居,小邻居]]#累积烯烃2
-                        ...
-        ]
+                    [end1,[higher rank neighbor,lower xxx],end2,[higher rank neighbor,lower xxx]]
+                    [end1,[higher rank neighbor,lower xxx],end2,[higher rank neighbor,lower xxx]]
+                    ...
+                    ]
         '''
         return cum_ene_end
 
