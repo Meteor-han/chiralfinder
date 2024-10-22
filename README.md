@@ -43,7 +43,7 @@ You will get the images of two molecules with predicted chiral axes in the folde
 [(5,)] [(9, 10)]
 ```
 
-<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/0.png" alt="0" width="10%" height="auto" /><img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/0.png" alt="1"  width="10%" height="auto" />
+<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/0.png" alt="0" width="30%" height="auto" /><img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/1.png" alt="1"  width="30%" height="auto" />
 
 You will get the prediction of one molecule for central chirality.
 
