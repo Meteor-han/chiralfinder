@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "chiralfinder"
-version = "0.1.0"
+version = "0.1.1"
 description = "The chiralfinder package."
 authors = [
-  "Runhan Shi <han.run.jiangming@qq.com>",
+  "Runhan Shi <han.run.jiangming@sjtu.edu.cn>",
   ]
 maintainers = [
-    "Runhan Shi <han.run.jiangming@qq.com>",
+    "Runhan Shi <han.run.jiangming@sjtu.edu.cn>",
     "Gufeng Yu <jm5820zz@sjtu.edu.cn>",
     ]
 license = "MIT"
