@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chiralfinder"
-version = "1.0.0"
+version = "0.1.0"
 description = "The chiralfinder package."
 authors = [
   "Runhan Shi <han.run.jiangming@sjtu.edu.cn>",
