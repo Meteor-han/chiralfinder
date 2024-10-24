@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chiralfinder"
-version = "0.1.1"
+version = "1.0.0"
 description = "The chiralfinder package."
 authors = [
   "Runhan Shi <han.run.jiangming@sjtu.edu.cn>",
@@ -15,7 +15,7 @@ homepage = "https://github.com/Meteor-han/chiralfinder/"
 repository = "https://github.com/Meteor-han/chiralfinder/"
 documentation = "https://github.com/Meteor-han/chiralfinder/"
 keywords = [
-    "Chirality"
+    "Chirality", "Chiral axis"
 ]
 
 [tool.poetry.dependencies]
