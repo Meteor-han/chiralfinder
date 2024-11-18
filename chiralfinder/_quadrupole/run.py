@@ -67,7 +67,7 @@ class ChiralFinder:
             mol.RemoveAllConformers()
             if with_index:
                 mol = self.mol_with_atom_index(mol)
-            hit_ats = self.res_central[i]["chiral id"]
+            hit_ats = self.res_central[i]["center id"]
             colours = [(0., 1.0, 0.)]
             atom_cols = {}
             for j, at in enumerate(hit_ats):
