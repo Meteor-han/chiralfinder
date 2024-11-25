@@ -79,7 +79,7 @@ class ChiralAxialType5(ChiralBase):
                 cos_j = np.clip(np.dot(atom_j_cor, atom_2_cor) / (r_j*r_x), -1., 1.)
                 
                 cos_i_j = np.cos(np.arccos(cos_i) - np.arccos(cos_j))
-                plan_dis = np.sqrt(r_i**2 + r_j**2 - 2*r_i*r_j*cos_i_j)
+                plan_dis = np.sqrt(max(r_i**2 + r_j**2 - 2*r_i*r_j*cos_i_j, 0))
 
                 r_1 = atom_r[atoms[i].GetAtomicNum() - 1]
                 r_2 = atom_r[atoms[j].GetAtomicNum() - 1]

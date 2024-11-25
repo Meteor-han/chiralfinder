@@ -9,21 +9,27 @@ from .quadrupole_v6 import ChiralAxialType6
 from tqdm import tqdm
 from rdkit.Chem.Draw import rdMolDraw2D
 import os
+from multiprocessing import Pool
+
+
+axial_classes = [ChiralAxialType1, ChiralAxialType2, ChiralAxialType3, ChiralAxialType4, ChiralAxialType5, ChiralAxialType6]
+central_class = ChiralCenter
 
 
 class ChiralFinder:
     def __init__(self, input_, input_type="SMILES") -> None:
-        self.my_classes = [ChiralAxialType1, ChiralAxialType2, ChiralAxialType3, ChiralAxialType4, ChiralAxialType5, ChiralAxialType6]
         self.res_axial = {"v1": [], "v2": [], "v3": [], "v4": [], "v5": [], "v6": [], "merge": []}
-        
-        self.center_class = ChiralCenter
         self.res_central = []
 
         self.mols = []
 
         if input_type == "SMILES":
-            for s in input_:
+            for i, s in enumerate(input_):
                 mol = Chem.MolFromSmiles(s)
+                if not mol:
+                    self.mols.append(None)
+                    warnings.warn(f"Index: {i}, invalid SMILES: {s}")
+                    continue
                 mol = Chem.AddHs(mol)
                 AllChem.EmbedMolecule(mol, maxAttempts=100)
                 self.mols.append(mol)
@@ -51,22 +57,36 @@ class ChiralFinder:
         else:
             warnings.warn("Invalid input format!")
     
-    def get_central(self):
+    def get_central(self, n_cpus=4):
         if self.res_central:
             return self.res_central
-        for i, mol_original in enumerate(tqdm(self.mols)):
-            self.res_central.append(self.center_class(mol_original).get_chi_mat())
+        with Pool(processes=n_cpus) as pool:
+            results = list(tqdm(pool.imap_unordered(self._process_one_mol_central, [(i, mol) for i, mol in enumerate(self.mols)]), total=len(self.mols)))
+        pool.close()
+        pool.join()
+
+        ordered_results = [result for result in sorted(results, key=lambda x: x[0])]
+        for one in ordered_results:
+            self.res_central.append(one[1])
         return self.res_central
+
+    def _process_one_mol_central(self, iter_mol):
+        index_, mol = iter_mol
+        if not mol:
+            return index_, None
+        return index_, central_class(mol).get_chi_mat()
 
     def draw_res_center(self, dir_path="./img_center", size=(500, 500), with_index=False):
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         for i, mol in enumerate(tqdm(self.mols)):
+            if not mol:
+                continue
             # without Hs, remove conformation
             mol = Chem.RemoveHs(mol)
             mol.RemoveAllConformers()
             if with_index:
-                mol = self.mol_with_atom_index(mol)
+                mol = mol_with_atom_index(mol)
             hit_ats = self.res_central[i]["center id"]
             colours = [(0., 1.0, 0.)]
             atom_cols = {}
@@ -80,40 +100,60 @@ class ChiralFinder:
             d.FinishDrawing()
 
             d.WriteDrawingText(os.path.join(dir_path, f"{i}.png"))
-
-    def get_axial(self):
+    
+    def get_axial(self, n_cpus=4):
         if self.res_axial["merge"]:
             return self.res_axial["merge"]
-        for i, mol_original in enumerate(tqdm(self.mols)):
-            temp_ = {"chiral axes": [], "quadrupole matrix": [], "determinant": [], "sign": []}
+        with Pool(processes=n_cpus) as pool:
+            results = list(tqdm(pool.imap_unordered(self._process_one_mol_axial, [(i, mol) for i, mol in enumerate(self.mols)]), total=len(self.mols)))
+        pool.close()
+        pool.join()
 
-            """merge all res"""
-            for j in range(1, 7):
-                tag_ = f"v{j}"
-                res_o = self.my_classes[j-1](Chem.Mol(mol_original)).get_chi_mat()
-                self.res_axial[tag_].append(res_o)
-                for i in range(len(res_o["chiral axes"])):
-                    if res_o["chiral axes"][i] not in temp_["chiral axes"] and res_o["chiral axes"][i][::-1] not in temp_["chiral axes"]:
-                        temp_["chiral axes"].append(res_o["chiral axes"][i])
-                        """for spiral chain, just repeat the res for end atoms, it does not matter"""
-                        if len(res_o["quadrupole matrix"]) <= i:
-                            i = 0
-                        temp_["quadrupole matrix"].append(res_o["quadrupole matrix"][i])
-                        temp_["determinant"].append(res_o["determinant"][i])
-                        temp_["sign"].append(res_o["sign"][i])
-            self.res_axial["merge"].append(temp_)
-
+        ordered_results = [result for result in sorted(results, key=lambda x: x[0])]
+        for one in ordered_results:
+            self.res_axial["merge"].append(one[1])
+            for k, v in one[2].items():
+                self.res_axial[k].append(v)
         return self.res_axial["merge"]
 
+    def _process_one_mol_axial(self, iter_mol):
+        index_, mol = iter_mol
+        if not mol:
+            tag2res = {}
+            for j in range(1, 7):
+                tag2res[f"v{j}"] = None
+            return index_, None, tag2res
+        temp_ = {"chiral axes": [], "quadrupole matrix": [], "determinant": [], "sign": []}
+        tag2res = {}
+
+        """merge all res"""
+        for j in range(1, 7):
+            tag_ = f"v{j}"
+            res_o = axial_classes[j-1](Chem.Mol(mol)).get_chi_mat()
+            tag2res[tag_] = res_o
+            # self.res_axial[tag_].append(res_o)
+            for i in range(len(res_o["chiral axes"])):
+                if res_o["chiral axes"][i] not in temp_["chiral axes"] and res_o["chiral axes"][i][::-1] not in temp_["chiral axes"]:
+                    temp_["chiral axes"].append(res_o["chiral axes"][i])
+                    """for spiral chain, just repeat the res for end atoms, it does not matter"""
+                    if len(res_o["quadrupole matrix"]) <= i:
+                        i = 0
+                    temp_["quadrupole matrix"].append(res_o["quadrupole matrix"][i])
+                    temp_["determinant"].append(res_o["determinant"][i])
+                    temp_["sign"].append(res_o["sign"][i])
+        return index_, temp_, tag2res
+    
     def draw_res_axial(self, dir_path="./img_axial", size=(500, 500), with_index=False):
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         for i, mol in enumerate(tqdm(self.mols)):
+            if not mol:
+                continue
             # without Hs, remove conformation
             mol = Chem.RemoveHs(mol)
             mol.RemoveAllConformers()
             if with_index:
-                mol = self.mol_with_atom_index(mol)
+                mol = mol_with_atom_index(mol)
             labels = self.res_axial["merge"][i]["chiral axes"]
             atoms = mol.GetAtoms()
             hit_ats = []
@@ -153,8 +193,8 @@ class ChiralFinder:
 
             d.WriteDrawingText(os.path.join(dir_path, f"{i}.png"))
 
-    # add index to the graph
-    def mol_with_atom_index(self, mol):
-        for atom in mol.GetAtoms():
-            atom.SetAtomMapNum(atom.GetIdx())
-        return mol
+# add index to the graph
+def mol_with_atom_index(mol):
+    for atom in mol.GetAtoms():
+        atom.SetAtomMapNum(atom.GetIdx())
+    return mol
