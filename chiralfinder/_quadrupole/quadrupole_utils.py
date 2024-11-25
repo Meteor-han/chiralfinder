@@ -27,10 +27,16 @@ class ChiralBase:
         if CIP:
             # dict is OK
             # AssignStereochemistry may fail anyway, try AssignStereochemistryFrom3D
-            Chem.AssignStereochemistryFrom3D(self.mol_wo_Hs)
-            self.CIP_list = defaultdict(lambda: -1)
-            for atom in self.mol_wo_Hs.GetAtoms():
-                self.CIP_list[atom.GetIdx()] = int(atom.GetProp('_CIPRank'))
+            try:
+                Chem.AssignStereochemistryFrom3D(self.mol_wo_Hs)
+                self.CIP_list = defaultdict(lambda: -1)
+                for atom in self.mol_wo_Hs.GetAtoms():
+                    self.CIP_list[atom.GetIdx()] = int(atom.GetProp('_CIPRank'))
+            except:
+                warnings.warn("Fail to assign CIPs, use CanonicalRankAtoms instead.")
+                # just an order, not CIP, unable to relate to R/S
+                self.CIP_list = list(Chem.CanonicalRankAtoms(
+                    mol, breakTies=False, includeChirality=True, includeIsotopes=True))
         else:
             # just an order, not CIP, unable to relate to R/S
             self.CIP_list = list(Chem.CanonicalRankAtoms(
