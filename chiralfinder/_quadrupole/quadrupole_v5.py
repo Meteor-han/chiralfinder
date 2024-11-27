@@ -115,7 +115,6 @@ class ChiralAxialType5(ChiralBase):
         return list_bonds
 
     def find_chiral_axes(self, rotation_limited, ring_bonds):
-        res = list(Chem.CanonicalRankAtoms(self.mol, breakTies=False, includeChirality=True, includeIsotopes=True))
         bonds = self.bonds_set(rotation_limited + ring_bonds)
 
         chiral_axes = []  # merge all confs
@@ -131,7 +130,7 @@ class ChiralAxialType5(ChiralBase):
             if (len(begin_neighbor)!=2) or (len(end_neighbor)!=2):
                 continue
 
-            if (res[begin_neighbor[0]] != res[begin_neighbor[1]]) and (res[end_neighbor[0]] != res[end_neighbor[1]]):  
+            if (self.CIP_list[begin_neighbor[0]] != self.CIP_list[begin_neighbor[1]]) and (self.CIP_list[end_neighbor[0]] != self.CIP_list[end_neighbor[1]]):  
                 chiral_axes.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
                 
                 mat_confs = []
@@ -141,14 +140,14 @@ class ChiralAxialType5(ChiralBase):
                     begin_cor = conf_[bond.GetBeginAtomIdx()]
                     end_cor = conf_[bond.GetEndAtomIdx()]
                 
-                    if res[begin_neighbor[0]] > res[begin_neighbor[1]]:
+                    if self.CIP_list[begin_neighbor[0]] > self.CIP_list[begin_neighbor[1]]:
                         begin_1_cor = conf_[begin_neighbor[0]]
                         begin_2_cor = conf_[begin_neighbor[1]]
                     else:
                         begin_1_cor = conf_[begin_neighbor[1]]
                         begin_2_cor = conf_[begin_neighbor[0]]
                         
-                    if res[end_neighbor[0]] > res[end_neighbor[1]]:
+                    if self.CIP_list[end_neighbor[0]] > self.CIP_list[end_neighbor[1]]:
                         end_1_cor = conf_[end_neighbor[0]]
                         end_2_cor = conf_[end_neighbor[1]]
                     else:

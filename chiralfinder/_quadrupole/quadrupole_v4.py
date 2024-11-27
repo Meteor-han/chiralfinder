@@ -14,23 +14,21 @@ class ChiralAxialType4(ChiralBase):
         return connecting_atoms
 
     def get_chi_mat(self):
-        # all bonds
-        bond_list = []
-        for bond in self.mol.GetBonds():
-            a1, a2 = bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()
-            # bi-direction
-            bond_list.extend([[a1, a2], [a2, a1]])
-        # bond connects ph
         phConnecting = []
-        for bond in bond_list:
-            if self.atoms[bond[0]].GetIsAromatic() and self.atoms[bond[1]].GetIsAromatic():
-                if not self.mol.GetBondBetweenAtoms(bond[0], bond[1]).GetIsAromatic():
-                    # just remain one direction
-                    if bond[0] < bond[1]:
-                        phConnecting.append((bond[0], bond[1]))
+        for bond in self.mol.GetBonds():
+            atom_1, atom_2 = bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()
+            if self.atoms[atom_1].GetIsAromatic() and self.atoms[atom_2].GetIsAromatic():
+                if not bond.GetIsAromatic():
+                    # check rings, same or not
+                    atom_1_ring = []
+                    for ring in self.ssr:
+                        if atom_1 in list(ring):
+                            atom_1_ring.append(list(ring))
+                    for one_ring in atom_1_ring:
+                        if atom_2 not in one_ring:
+                            phConnecting.append((atom_1, atom_2))
+                            break
 
-        # just an order, not CIP, unable to relate to R/S
-        res = list(Chem.CanonicalRankAtoms(self.mol, breakTies=False, includeChirality=True, includeIsotopes=True))
         atoms = self.mol.GetAtoms()
         # get the axis
         chiral_axes = []  # merge all confs
@@ -50,7 +48,7 @@ class ChiralAxialType4(ChiralBase):
                 continue
 
             # different then chiral
-            if (res[begin_neighbor[0]] != res[begin_neighbor[1]]) and (res[end_neighbor[0]] != res[end_neighbor[1]]):
+            if (self.CIP_list[begin_neighbor[0]] != self.CIP_list[begin_neighbor[1]]) and (self.CIP_list[end_neighbor[0]] != self.CIP_list[end_neighbor[1]]):
                 chiral_axes.append(bond)
 
                 mat_confs = []
@@ -61,14 +59,14 @@ class ChiralAxialType4(ChiralBase):
                     end_cor = conf_[bond[1]]
 
                     # sort the outside neighbors
-                    if res[begin_neighbor[0]] > res[begin_neighbor[1]]:
+                    if self.CIP_list[begin_neighbor[0]] > self.CIP_list[begin_neighbor[1]]:
                         begin_1_cor = conf_[begin_neighbor[0]]
                         begin_2_cor = conf_[begin_neighbor[1]]
                     else:
                         begin_1_cor = conf_[begin_neighbor[1]]
                         begin_2_cor = conf_[begin_neighbor[0]]
 
-                    if res[end_neighbor[0]] > res[end_neighbor[1]]:
+                    if self.CIP_list[end_neighbor[0]] > self.CIP_list[end_neighbor[1]]:
                         end_1_cor = conf_[end_neighbor[0]]
                         end_2_cor = conf_[end_neighbor[1]]
                     else:

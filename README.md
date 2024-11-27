@@ -1,6 +1,6 @@
 # chiralfinder
 
-Data and codes for the paper "ChiralFinder: an Open-Source Tool for Precise Stereogenic Element Detection and Stereoisomer Discrimination", in submission.
+Data and codes for the paper "ChiralFinder: A Computational Framework for Identifying Stereogenic Elements and Distinguishing Stereoisomers in Complex Molecules", in submission.
 
 ## Quick use
 
