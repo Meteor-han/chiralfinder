@@ -36,7 +36,7 @@ class ChiralAxialType1(ChiralBase):
     def get_chi_mat(self):
         chi_spi_ = self.find_chi_spi(self.find_spiral_atoms())
 
-        mats, dets, signs = [], [], []  # for each conf
+        mats, dets, norm_cp, signs = [], [], [], []  # for each conf
         for one in chi_spi_:
             # (id_, rank_), sort by rank, increasing
             nei_1_id_rank = [(i, self.CIP_list[self.atoms[i].GetIdx()]) for i in one[1]]
@@ -47,21 +47,26 @@ class ChiralAxialType1(ChiralBase):
 
             mat_confs = []
             det_confs = []
+            norm_det_confs = []
             sign_confs = []
             for conf_ in self.coordinates:
                 neigh_cor = [conf_[one[0]]]
                 for one_ in neigh_id_rank:
                     neigh_cor.append(conf_[one_[0]])
                 # get the matrix
-                a = neigh_cor[1] - neigh_cor[2]
-                b = neigh_cor[0] - neigh_cor[3]
-                c = neigh_cor[0] - neigh_cor[4]
+                a = neigh_cor[1] - neigh_cor[0]
+                b = neigh_cor[2] - neigh_cor[0]
+                c = neigh_cor[3] - neigh_cor[4]
+                cp_max = np.linalg.norm(np.cross(a, b)) * np.linalg.norm(c)
                 mat = np.array([a, b, c])
                 mat_confs.append(mat)
                 det_, sign_ = self.criterion(mat)
                 det_confs.append(det_)
+                norm_det_confs.append(det_/cp_max)
                 sign_confs.append(sign_)
             mats.append(mat_confs)
             dets.append(det_confs)
+            norm_cp.append(norm_det_confs)
             signs.append(sign_confs)
-        return {"spiral id": chi_spi_, "chiral axes": [(one[0],) for one in chi_spi_], "quadrupole matrix": mats, "determinant": dets, "sign": signs}
+        return {"spiral id": chi_spi_, "chiral axes": [(one[0],) for one in chi_spi_], "quadrupole matrix": mats, 
+                "determinant": dets, "norm CP": norm_cp, "sign": signs}

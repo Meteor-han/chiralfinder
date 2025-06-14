@@ -118,7 +118,7 @@ class ChiralAxialType5(ChiralBase):
         bonds = self.bonds_set(rotation_limited + ring_bonds)
 
         chiral_axes = []  # merge all confs
-        mats, dets, signs = [], [], []  # for each conf
+        mats, dets, norm_cp, signs = [], [], [], []  # for each conf
         for bond in bonds:
             begin_neighbor = [atom.GetIdx() for atom in bond.GetBeginAtom().GetNeighbors()]
             end_neighbor = [atom.GetIdx() for atom in bond.GetEndAtom().GetNeighbors()]
@@ -135,6 +135,7 @@ class ChiralAxialType5(ChiralBase):
                 
                 mat_confs = []
                 det_confs = []
+                norm_det_confs = []
                 sign_confs = []
                 for conf_ in self.coordinates:
                     begin_cor = conf_[bond.GetBeginAtomIdx()]
@@ -157,13 +158,16 @@ class ChiralAxialType5(ChiralBase):
                     a = begin_1_cor - (begin_cor+end_cor)/2
                     b = begin_2_cor - (begin_cor+end_cor)/2
                     c = end_1_cor - end_2_cor
+                    cp_max = np.linalg.norm(np.cross(a, b)) * np.linalg.norm(c)
                     mat = np.array([a, b, c])
-                    
                     mat_confs.append(mat)
                     det_, sign_ = self.criterion(mat)
                     det_confs.append(det_)
+                    norm_det_confs.append(det_/cp_max)
                     sign_confs.append(sign_)
                 mats.append(mat_confs)
                 dets.append(det_confs)
+                norm_cp.append(norm_det_confs)
                 signs.append(sign_confs)
-        return {"chiral axes": chiral_axes, "quadrupole matrix": mats, "determinant": dets, "sign": signs}
+        return {"chiral axes": chiral_axes, "quadrupole matrix": mats, 
+                "determinant": dets, "norm CP": norm_cp, "sign": signs}

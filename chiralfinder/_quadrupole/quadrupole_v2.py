@@ -229,7 +229,7 @@ class ChiralAxialType2(ChiralBase):
         bonds_chain_2_ = self.cum_ene(double_bonds_)
         end_atoms_ = self.find_end_atom(chain_, bonds_chain_2_)
         chi_spi_, ends_ = [], []
-        mats, dets, signs = [], [], []  # for each conf
+        mats, dets, norm_cp, signs = [], [], [], []  # for each conf
 
         for spi_chain in end_atoms_:
             spi_atoms = spi_chain[0]
@@ -242,6 +242,7 @@ class ChiralAxialType2(ChiralBase):
                     ends_.append((ends[i], ends[j]))
                     mat_confs = []
                     det_confs = []
+                    norm_det_confs = []
                     sign_confs = []
                     for conf_ in self.coordinates:
                         nei_2 = ends[j][1]
@@ -250,14 +251,16 @@ class ChiralAxialType2(ChiralBase):
                         a = cri_atoms_cor[1] - cri_atoms_cor[0]
                         b = cri_atoms_cor[2] - cri_atoms_cor[0]
                         c = cri_atoms_cor[3] - cri_atoms_cor[4]
+                        cp_max = np.linalg.norm(np.cross(a, b)) * np.linalg.norm(c)
                         mat = np.array([a, b, c])
                         mat_confs.append(mat)
-                        # in the same plane or not
                         det_, sign_ = self.criterion(mat)
                         det_confs.append(det_)
+                        norm_det_confs.append(det_/cp_max)
                         sign_confs.append(sign_)
                     mats.append(mat_confs)
                     dets.append(det_confs)
+                    norm_cp.append(norm_det_confs)
                     signs.append(sign_confs)
 
         axes_label = []
@@ -266,4 +269,5 @@ class ChiralAxialType2(ChiralBase):
             axes_label.append(ends_[i][0][0])
             axes_label.append(ends_[i][1][0])
         """axes atoms, more than other results!"""
-        return {"spiral id": chi_spi_, "ends": ends_, "chiral axes": [(one,) for one in set(axes_label)], "quadrupole matrix": mats, "determinant": dets, "sign": signs}
+        return {"spiral id": chi_spi_, "ends": ends_, "chiral axes": [(one,) for one in set(axes_label)], 
+                "quadrupole matrix": mats, "determinant": dets, "norm CP": norm_cp, "sign": signs}

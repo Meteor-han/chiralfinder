@@ -1,6 +1,6 @@
 # chiralfinder
 
-Data and codes for the paper "ChiralFinder: A Computational Framework for Identifying Stereogenic Elements and Distinguishing Stereoisomers in Complex Molecules", in submission.
+Data and codes for the paper "A Unifying Geometric Framework for Computational Representation of Stereoisomers Based on Mixed Product", in submission.
 
 ## Quick use
 
@@ -55,6 +55,7 @@ You will get the prediction of one molecule for central chirality.
        [-2.0754821 ,  0.47857598,  1.02051223],
        [-0.0064714 , -0.03258116,  2.29906673]])]], 
 'determinant': [[-5.501797575969392]], 
+'norm CP': [[-0.8993660781912431]], 
 'sign': [[-1.0]]
 }]
 ```

@@ -146,13 +146,14 @@ class ChiralAxialType3(ChiralBase):
         cum_ene_end_ = self.find_ene_end_atoms(cum_ene_)
 
         chi_axial_ = []
-        mats, dets, signs = [], [], []  # for each conf
+        mats, dets, norm_cp, signs = [], [], [], []  # for each conf
         for ene in cum_ene_end_:
             end_1 = ene[0]
             end_2 = ene[1]
             chi_axial_.append((end_1[0], end_2[0]))
             mat_confs = []
             det_confs = []
+            norm_det_confs = []
             sign_confs = []
             for conf_ in self.coordinates:
                 end_cor_1 = [conf_[end_1[0]]]
@@ -163,12 +164,16 @@ class ChiralAxialType3(ChiralBase):
                 a = end_cor[1] - end_cor[0]
                 b = end_cor[2] - end_cor[0]
                 c = end_cor[4] - end_cor[3]
+                cp_max = np.linalg.norm(np.cross(a, b)) * np.linalg.norm(c)
                 mat = np.array([a, b, c])
                 mat_confs.append(mat)
                 det_, sign_ = self.criterion(mat)
                 det_confs.append(det_)
+                norm_det_confs.append(det_/cp_max)
                 sign_confs.append(sign_)
             mats.append(mat_confs)
             dets.append(det_confs)
+            norm_cp.append(norm_det_confs)
             signs.append(sign_confs)
-        return {"axial id": chi_axial_, "chiral axes": chi_axial_, "quadrupole matrix": mats, "determinant": dets, "sign": signs}
+        return {"axial id": chi_axial_, "chiral axes": chi_axial_, "quadrupole matrix": mats, 
+                "determinant": dets, "norm CP": norm_cp, "sign": signs}
