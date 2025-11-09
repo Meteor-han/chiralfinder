@@ -33,6 +33,7 @@ class ChiralAxialType4(ChiralBase):
         # get the axis
         chiral_axes = []  # merge all confs
         mats, dets, norm_cp, signs = [], [], [], []  # for each conf
+        neigh_ids = []
         for bond in phConnecting:
             # phbonds neighbors
             begin_neighbor = [atom.GetIdx() for atom in atoms[bond[0]].GetNeighbors()]
@@ -84,10 +85,11 @@ class ChiralAxialType4(ChiralBase):
                     det_confs.append(det_)
                     norm_det_confs.append(det_/cp_max)
                     sign_confs.append(sign_)
+                    neigh_ids.append([begin_neighbor[0], begin_neighbor[1], end_neighbor[0], end_neighbor[1]])
                 mats.append(mat_confs)
                 dets.append(det_confs)
                 norm_cp.append(norm_det_confs)
                 signs.append(sign_confs)
         return {"chiral axes": chiral_axes, "quadrupole matrix": mats, 
-                "determinant": dets, "norm CP": norm_cp, "sign": signs}
+                "determinant": dets, "norm CP": norm_cp, "sign": signs, "neighbor ids": neigh_ids}
     

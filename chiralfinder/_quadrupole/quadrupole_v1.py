@@ -37,6 +37,7 @@ class ChiralAxialType1(ChiralBase):
         chi_spi_ = self.find_chi_spi(self.find_spiral_atoms())
 
         mats, dets, norm_cp, signs = [], [], [], []  # for each conf
+        neigh_ids = []
         for one in chi_spi_:
             # (id_, rank_), sort by rank, increasing
             nei_1_id_rank = [(i, self.CIP_list[self.atoms[i].GetIdx()]) for i in one[1]]
@@ -68,5 +69,6 @@ class ChiralAxialType1(ChiralBase):
             dets.append(det_confs)
             norm_cp.append(norm_det_confs)
             signs.append(sign_confs)
+            neigh_ids.append([x[0] for x in neigh_id_rank])
         return {"spiral id": chi_spi_, "chiral axes": [(one[0],) for one in chi_spi_], "quadrupole matrix": mats, 
-                "determinant": dets, "norm CP": norm_cp, "sign": signs}
+                "determinant": dets, "norm CP": norm_cp, "sign": signs, "neighbor ids": neigh_ids}

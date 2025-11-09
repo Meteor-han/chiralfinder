@@ -123,7 +123,7 @@ class ChiralFinder:
             for j in range(1, 7):
                 tag2res[f"v{j}"] = None
             return index_, None, tag2res
-        temp_ = {"chiral axes": [], "quadrupole matrix": [], "determinant": [], "sign": []}
+        temp_ = {"chiral axes": [], "quadrupole matrix": [], "determinant": [], "sign": [], "neighbor ids": []}
         tag2res = {}
 
         """merge all res"""
@@ -141,6 +141,7 @@ class ChiralFinder:
                     temp_["quadrupole matrix"].append(res_o["quadrupole matrix"][i])
                     temp_["determinant"].append(res_o["determinant"][i])
                     temp_["sign"].append(res_o["sign"][i])
+                    temp_["neighbor ids"].append(res_o["neighbor ids"][i])
         return index_, temp_, tag2res
     
     def draw_res_axial(self, dir_path="./img_axial", size=(500, 500), with_index=False):

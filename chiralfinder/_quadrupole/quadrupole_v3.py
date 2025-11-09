@@ -147,6 +147,7 @@ class ChiralAxialType3(ChiralBase):
 
         chi_axial_ = []
         mats, dets, norm_cp, signs = [], [], [], []  # for each conf
+        neigh_ids = []
         for ene in cum_ene_end_:
             end_1 = ene[0]
             end_2 = ene[1]
@@ -171,9 +172,10 @@ class ChiralAxialType3(ChiralBase):
                 det_confs.append(det_)
                 norm_det_confs.append(det_/cp_max)
                 sign_confs.append(sign_)
+                neigh_ids.append(end_1[1] + end_2[1])
             mats.append(mat_confs)
             dets.append(det_confs)
             norm_cp.append(norm_det_confs)
             signs.append(sign_confs)
         return {"axial id": chi_axial_, "chiral axes": chi_axial_, "quadrupole matrix": mats, 
-                "determinant": dets, "norm CP": norm_cp, "sign": signs}
+                "determinant": dets, "norm CP": norm_cp, "sign": signs, "neighbor ids": neigh_ids}

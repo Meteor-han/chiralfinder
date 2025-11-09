@@ -10,6 +10,7 @@ class ChiralCenter(ChiralBase):
         cen_chi = self.find_center_atoms()
 
         mats, dets, norm_cp, signs = [], [], [], []  # for each conf
+        neigh_ids = []
         for i in cen_chi:
             mat_confs = []
             det_confs = []
@@ -45,4 +46,5 @@ class ChiralCenter(ChiralBase):
             dets.append(det_confs)
             norm_cp.append(norm_det_confs)
             signs.append(sign_confs)
-        return {"center id": cen_chi, "quadrupole matrix": mats, "determinant": dets, "norm CP": norm_cp, "sign": signs}
+            neigh_ids.append([x[0] for x in neigh_id_rank])
+        return {"center id": cen_chi, "quadrupole matrix": mats, "determinant": dets, "norm CP": norm_cp, "sign": signs, "neighbor ids": neigh_ids}

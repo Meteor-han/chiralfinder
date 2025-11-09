@@ -230,6 +230,7 @@ class ChiralAxialType2(ChiralBase):
         end_atoms_ = self.find_end_atom(chain_, bonds_chain_2_)
         chi_spi_, ends_ = [], []
         mats, dets, norm_cp, signs = [], [], [], []  # for each conf
+        neigh_ids = []
 
         for spi_chain in end_atoms_:
             spi_atoms = spi_chain[0]
@@ -262,6 +263,7 @@ class ChiralAxialType2(ChiralBase):
                     dets.append(det_confs)
                     norm_cp.append(norm_det_confs)
                     signs.append(sign_confs)
+                    neigh_ids.append(cri_atoms[1:])
 
         axes_label = []
         for i in range(len(chi_spi_)):
@@ -270,4 +272,4 @@ class ChiralAxialType2(ChiralBase):
             axes_label.append(ends_[i][1][0])
         """axes atoms, more than other results!"""
         return {"spiral id": chi_spi_, "ends": ends_, "chiral axes": [(one,) for one in set(axes_label)], 
-                "quadrupole matrix": mats, "determinant": dets, "norm CP": norm_cp, "sign": signs}
+                "quadrupole matrix": mats, "determinant": dets, "norm CP": norm_cp, "sign": signs, "neighbor ids": neigh_ids}

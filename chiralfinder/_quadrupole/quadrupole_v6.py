@@ -19,15 +19,18 @@ class ChiralAxialType6(ChiralCenter):
         fake_axes = self.find_fake_axes()
         chi_results = super().get_chi_mat()
         mats, dets, norm_cp, signs = [], [], [], []
+        neigh_ids = []
         
         for bond in fake_axes:
             tmp_mat, tmp_det, tmp_cp, tmp_sign = [], [], [], []
+            tmp_neigh_ids = []
             for i in range(len(chi_results["center id"])):
                 if bond[0] == chi_results["center id"][i]:
                     tmp_mat.append(chi_results["quadrupole matrix"][i])
                     tmp_sign.append(chi_results["sign"][i])
                     tmp_det.append(chi_results["determinant"][i])
                     tmp_cp.append(chi_results["norm CP"][i])
+                    tmp_neigh_ids.append(chi_results["neighbor ids"][i])
                     break
             for i in range(len(chi_results["center id"])):
                 if bond[1] == chi_results["center id"][i]:
@@ -35,10 +38,12 @@ class ChiralAxialType6(ChiralCenter):
                     tmp_sign.append(chi_results["sign"][i])
                     tmp_det.append(chi_results["determinant"][i])
                     tmp_cp.append(chi_results["norm CP"][i])
+                    tmp_neigh_ids.append(chi_results["neighbor ids"][i])
                     break
             mats.append(tmp_mat)
             dets.append(tmp_det)
             norm_cp.append(tmp_cp)
             signs.append(tmp_sign)
+            neigh_ids.append(tmp_neigh_ids)
         return {"chiral axes": fake_axes, "quadrupole matrix": mats, 
-                "determinant": dets, "norm CP": norm_cp, "sign": signs}
+                "determinant": dets, "norm CP": norm_cp, "sign": signs, "neighbor ids": neigh_ids}
