@@ -6,7 +6,7 @@ Data and codes for the paper "A Unifying Geometric Framework for Computational R
 
 Molecular chirality plays a fundamental role in chemistry, biology, and drug discovery, yet existing computational methods struggle with complex stereochemistry and cannot quantify chirality. This project introduces **a unifying geometric framework based on mixed product representations** that directly map molecular symmetry breaking into a 3D algebraic space. The framework provides quantitative descriptors for each stereogenic element, going beyond the qualitative Cahn–Ingold–Prelog rules. We implement this theory in **ChiralFinder**, a computational tool that accurately identifies and distinguishes central and axial stereogenic elements, differentiates conformations, and integrates effectively with machine learning models to improve spectra prediction. By offering a rigorous geometric foundation, ChiralFinder enables automated chirality analysis and forms the basis for a comprehensive stereoisomer representation framework with potential extensions to planar and helical chirality.
 
-<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/chirality product.png" alt="1"  width="90%" height="auto" />
+<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/chirality product.png" alt="1"  width="95%" height="auto" />
 
 ## Quick use
 
@@ -73,7 +73,7 @@ You will get the prediction of one molecule for central chirality.
 
 The RotA dataset is stored in the folder `./data`. It contains 3,140 conformers of 650 axially chiral molecules, each with at least one chiral axis. The excel file contains labeled chiral axes and some calculated molecular properties. The pickle file includes calculated molecular conformers. The dataset includes a wide range of axially chiral structures, and the corresponding molecular fingerprints are visualized below.
 
-<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/axial_650.png" alt="1"  width="18%" height="auto" />
+<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/axial_650.png" alt="1"  width="80%" height="auto" />
 
 We also provide sampled achiral molecules and centrally chiral molecules with multiple centers from the PubChem3D database in the folder `./data`.
 
