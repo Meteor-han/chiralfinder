@@ -71,7 +71,9 @@ You will get the prediction of one molecule for central chirality.
 
 ## Dataset
 
-The RotA dataset is stored in the folder `./data`. The excel file contains labeled chiral axes and some calculated molecular properties. The pickle file includes calculated molecular conformers.
+The RotA dataset is stored in the folder `./data`. It contains 3,140 conformers of 650 axially chiral molecules, each with at least one chiral axis. The excel file contains labeled chiral axes and some calculated molecular properties. The pickle file includes calculated molecular conformers. The dataset includes a wide range of axially chiral structures, and the corresponding molecular fingerprints are visualized below.
+
+<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/axial_650.png" alt="1"  width="18%" height="auto" />
 
 We also provide sampled achiral molecules and centrally chiral molecules with multiple centers from the PubChem3D database in the folder `./data`.
 
