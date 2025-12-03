@@ -1,10 +1,18 @@
 # chiralfinder
 
-Data and codes for the paper "A Unifying Geometric Framework for Computational Representation of Stereoisomers Based on Mixed Product", in submission.
+Data and codes for the paper "A Unifying Geometric Framework for Computational Representation of Stereoisomers Based on Mixed Product", in press at *Cell Reports Physical Science*. See pre-print version at [Chemrxiv](https://chemrxiv.org/engage/chemrxiv/article-details/67a0ae146dde43c90873b1e0).
+
+## Overview
+
+Molecular chirality plays a fundamental role in chemistry, biology, and drug discovery, yet existing computational methods struggle with complex stereochemistry and cannot quantify chirality. This project introduces **a unifying geometric framework based on mixed product representations** that directly map molecular symmetry breaking into a 3D algebraic space. The framework provides quantitative descriptors for each stereogenic element, going beyond the qualitative Cahn–Ingold–Prelog rules. We implement this theory in **ChiralFinder**, a computational tool that accurately identifies and distinguishes central and axial stereogenic elements, differentiates conformations, and integrates effectively with machine learning models to improve spectra prediction. By offering a rigorous geometric foundation, ChiralFinder enables automated chirality analysis and forms the basis for a comprehensive stereoisomer representation framework with potential extensions to planar and helical chirality.
+
+<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/chirality product.png" alt="1"  width="30%" height="auto" />
 
 ## Quick use
 
-Install Anaconda, create and enter your own environment like
+See online web server at [Here](https://compbio.sjtu.edu.cn/services/chiralfinder).
+
+To use ChiralFinder as a python package, install Anaconda, create and enter your own environment like
 
     conda create -n env_test python=3.10
 Enter the conda environment and install the ChiralFinder package through pip like
@@ -14,10 +22,10 @@ conda activate env_test
 pip install chiralfinder
 ```
 
-Run `test.py` to get example results.
+Run `run_example.py` to get example results.
 
 ```
-python test.py
+python run_example.py
 ```
 
 ```python
@@ -70,6 +78,13 @@ We also provide sampled achiral molecules and centrally chiral molecules with mu
 ## Citation
 
 ```
-To be filled
+@article{Shi2025ChiralFinder,
+  author    = {Shi, Runhan and Zhang, Chi and Yu, Gufeng and Huo, Xiaohong and Yang, Yang},
+  title     = {ChiralFinder: Automated Detection of Stereogenic Elements and Discrimination of Stereoisomers in Complex Molecules},
+  journal   = {ChemRxiv},
+  year      = {2025},
+  doi       = {10.26434/chemrxiv-2025-wz7kh},
+  note      = {Preprint, not peer-reviewed}
+}
 ```
 
