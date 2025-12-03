@@ -6,7 +6,7 @@ Data and codes for the paper "A Unifying Geometric Framework for Computational R
 
 Molecular chirality plays a fundamental role in chemistry, biology, and drug discovery, yet existing computational methods struggle with complex stereochemistry and cannot quantify chirality. This project introduces **a unifying geometric framework based on mixed product representations** that directly map molecular symmetry breaking into a 3D algebraic space. The framework provides quantitative descriptors for each stereogenic element, going beyond the qualitative Cahn–Ingold–Prelog rules. We implement this theory in **ChiralFinder**, a computational tool that accurately identifies and distinguishes central and axial stereogenic elements, differentiates conformations, and integrates effectively with machine learning models to improve spectra prediction. By offering a rigorous geometric foundation, ChiralFinder enables automated chirality analysis and forms the basis for a comprehensive stereoisomer representation framework with potential extensions to planar and helical chirality.
 
-<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/chirality product.png" alt="1"  width="30%" height="auto" />
+<img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/chirality product.png" alt="1"  width="90%" height="auto" />
 
 ## Quick use
 
