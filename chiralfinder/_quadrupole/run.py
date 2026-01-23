@@ -41,7 +41,7 @@ class ChiralFinder:
                 self.mols.append(mol)
         elif input_type == "sdf":
             for sdf in input_:
-                r = Chem.SDMolSupplier(sdf)
+                r = Chem.SDMolSupplier(sdf, removeHs=False)
                 for mol in tqdm(r):
                     mol = Chem.AddHs(mol)
                     if mol.GetNumConformers() == 0:

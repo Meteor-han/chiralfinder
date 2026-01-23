@@ -1,6 +1,6 @@
 # chiralfinder
 
-Data and codes for the paper "A Unifying Geometric Framework for Computational Representation of Stereoisomers Based on Mixed Product", in press at *Cell Reports Physical Science*. See pre-print version at [Chemrxiv](https://chemrxiv.org/engage/chemrxiv/article-details/67a0ae146dde43c90873b1e0).
+Data and codes for the paper "[A Unifying Geometric Framework for Computational Representation of Stereoisomers Based on Mixed Product](https://www.cell.com/cell-reports-physical-science/fulltext/S2666-3864(25)00664-2)", published in *Cell Reports Physical Science* 2026.
 
 ## Overview
 
@@ -8,9 +8,11 @@ Molecular chirality plays a fundamental role in chemistry, biology, and drug dis
 
 <img src="https://github.com/Meteor-han/chiralfinder/blob/main/img_axial/chirality product.png" alt="1"  width="95%" height="auto" />
 
-## Quick use
+## Web server
 
 See online web server at [Here](https://compbio.sjtu.edu.cn/services/chiralfinder).
+
+## Quick use
 
 To use ChiralFinder as a python package, install Anaconda, create and enter your own environment like
 
@@ -82,11 +84,13 @@ We also provide sampled achiral molecules and centrally chiral molecules with mu
 ```
 @article{Shi2025ChiralFinder,
   author    = {Shi, Runhan and Zhang, Chi and Yu, Gufeng and Huo, Xiaohong and Yang, Yang},
-  title     = {ChiralFinder: Automated Detection of Stereogenic Elements and Discrimination of Stereoisomers in Complex Molecules},
-  journal   = {ChemRxiv},
-  year      = {2025},
-  doi       = {10.26434/chemrxiv-2025-wz7kh},
-  note      = {Preprint, not peer-reviewed}
+  title     = {A unifying geometric framework for computational representation of stereoisomers based on mixed product},
+  journal   = {Cell Reports Physical Science},
+  year      = {2026},
+  volume    = {7},
+  number    = {1},
+  pages     = {103065},
+  doi       = {S2666-3864(25)00664-2},
 }
 ```
 
