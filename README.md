@@ -90,7 +90,7 @@ We also provide sampled achiral molecules and centrally chiral molecules with mu
   volume    = {7},
   number    = {1},
   pages     = {103065},
-  doi       = {S2666-3864(25)00664-2},
+  doi       = {10.1016/j.xcrp.2025.103065},
 }
 ```
 
