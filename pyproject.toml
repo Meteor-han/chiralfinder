@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chiralfinder"
-version = "0.0.2"
+version = "0.0.3"
 description = "The chiralfinder package."
 authors = [
   "Runhan Shi <han.run.jiangming@sjtu.edu.cn>",
@@ -24,7 +24,7 @@ rdkit = "^2024.3.3"
 numpy = "^1.26.4"
 tqdm = "^4.65.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "*"
 
 [build-system]
