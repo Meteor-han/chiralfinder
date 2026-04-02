@@ -32,9 +32,14 @@ class ChiralCenter(ChiralBase):
                     neigh_cor.insert(1, (neigh_cor[1]+neigh_cor[2]+neigh_cor[3]-neigh_cor[0]*3)/3*-1.0+neigh_cor[0])
                 if len(neigh_cor) < 5:
                     continue
+                # deprecated implementation
+                # a = neigh_cor[1] - neigh_cor[0]
+                # b = neigh_cor[4] - neigh_cor[3]
+                # c = neigh_cor[4] - neigh_cor[2]
+
                 a = neigh_cor[1] - neigh_cor[0]
-                b = neigh_cor[4] - neigh_cor[3]
-                c = neigh_cor[4] - neigh_cor[2]
+                b = neigh_cor[2] - neigh_cor[0]
+                c = neigh_cor[3] - neigh_cor[4]
                 cp_max = np.linalg.norm(np.cross(a, b)) * np.linalg.norm(c)
                 mat = np.array([a, b, c])
                 mat_confs.append(mat)

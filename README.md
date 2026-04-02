@@ -58,16 +58,15 @@ You will get the images of two molecules with predicted chiral axes in the folde
 You will get the prediction of one molecule for central chirality.
 
 ```
-[{
-'center id': [4], 
+[{'center id': [4], 
 'quadrupole matrix': 
-       [[array([[-0.29989323, -1.08474687,  0.09943544],
-       [-2.0754821 ,  0.47857598,  1.02051223],
-       [-0.0064714 , -0.03258116,  2.29906673]])]], 
-'determinant': [[-5.501797575969392]], 
-'norm CP': [[-0.8993660781912431]], 
-'sign': [[-1.0]]
-}]
+       [[array([[-0.29989338, -1.08474684,  0.09943545],
+       [-0.58823299,  0.65781245, -1.20683256],
+       [ 2.07548201, -0.47857599, -1.02051216]])]], 
+'determinant': [[3.6349643722752485]], 
+'norm CP': [[0.9890715818535913]], 
+'sign': [[1.0]], 
+'neighbor ids': [[18, 5, 3, 8]]}]
 ```
 
 
