@@ -32,12 +32,14 @@ class ChiralFinder:
                     continue
                 mol = Chem.AddHs(mol)
                 AllChem.EmbedMolecule(mol, maxAttempts=100)
+                mol, _ = normalize_mol_atom_order(mol)
                 self.mols.append(mol)
         elif input_type == "molecules":
             for mol in input_:
                 mol = Chem.AddHs(mol)
                 if mol.GetNumConformers() == 0:
                     AllChem.EmbedMolecule(mol, maxAttempts=100)
+                mol, _ = normalize_mol_atom_order(mol)
                 self.mols.append(mol)
         elif input_type == "sdf":
             for sdf in input_:
@@ -46,6 +48,7 @@ class ChiralFinder:
                     mol = Chem.AddHs(mol)
                     if mol.GetNumConformers() == 0:
                         AllChem.EmbedMolecule(mol, maxAttempts=100)
+                    mol, _ = normalize_mol_atom_order(mol)
                     self.mols.append(mol)
         elif input_type == "mol":
             for mol_p in input_:
@@ -53,6 +56,7 @@ class ChiralFinder:
                 mol = Chem.AddHs(mol)
                 if mol.GetNumConformers() == 0:
                     AllChem.EmbedMolecule(mol, maxAttempts=100)
+                mol, _ = normalize_mol_atom_order(mol)
                 self.mols.append(mol)
         else:
             warnings.warn("Invalid input format!")

@@ -131,7 +131,7 @@ class ChiralAxialType5(ChiralBase):
             if (len(begin_neighbor)!=2) or (len(end_neighbor)!=2):
                 continue
 
-            if (self.CIP_list[begin_neighbor[0]] != self.CIP_list[begin_neighbor[1]]) and (self.CIP_list[end_neighbor[0]] != self.CIP_list[end_neighbor[1]]):  
+            if (self.get_cip_rank(begin_neighbor[0]) != self.get_cip_rank(begin_neighbor[1])) and (self.get_cip_rank(end_neighbor[0]) != self.get_cip_rank(end_neighbor[1])):  
                 chiral_axes.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
                 
                 mat_confs = []
@@ -142,14 +142,14 @@ class ChiralAxialType5(ChiralBase):
                     begin_cor = conf_[bond.GetBeginAtomIdx()]
                     end_cor = conf_[bond.GetEndAtomIdx()]
                 
-                    if self.CIP_list[begin_neighbor[0]] > self.CIP_list[begin_neighbor[1]]:
+                    if self.get_cip_rank(begin_neighbor[0]) > self.get_cip_rank(begin_neighbor[1]):
                         begin_1_cor = conf_[begin_neighbor[0]]
                         begin_2_cor = conf_[begin_neighbor[1]]
                     else:
                         begin_1_cor = conf_[begin_neighbor[1]]
                         begin_2_cor = conf_[begin_neighbor[0]]
                         
-                    if self.CIP_list[end_neighbor[0]] > self.CIP_list[end_neighbor[1]]:
+                    if self.get_cip_rank(end_neighbor[0]) > self.get_cip_rank(end_neighbor[1]):
                         end_1_cor = conf_[end_neighbor[0]]
                         end_2_cor = conf_[end_neighbor[1]]
                     else:

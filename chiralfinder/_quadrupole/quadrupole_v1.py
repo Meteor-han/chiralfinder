@@ -40,8 +40,8 @@ class ChiralAxialType1(ChiralBase):
         neigh_ids = []
         for one in chi_spi_:
             # (id_, rank_), sort by rank, increasing
-            nei_1_id_rank = [(i, self.CIP_list[self.atoms[i].GetIdx()]) for i in one[1]]
-            nei_2_id_rank = [(i, self.CIP_list[self.atoms[i].GetIdx()]) for i in one[2]]
+            nei_1_id_rank = [(i, self.get_cip_rank(i)) for i in one[1]]
+            nei_2_id_rank = [(i, self.get_cip_rank(i)) for i in one[2]]
             nei_1_id_rank = sorted(nei_1_id_rank, key=lambda x: x[1])
             nei_2_id_rank = sorted(nei_2_id_rank, key=lambda x: x[1])
             neigh_id_rank = nei_1_id_rank + nei_2_id_rank

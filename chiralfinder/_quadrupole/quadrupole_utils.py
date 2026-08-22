@@ -6,8 +6,30 @@ from collections import defaultdict
 import warnings
 
 
+def normalize_mol_atom_order(mol):
+    """Renumber atoms so heavy atoms precede hydrogens.
+
+    RDKit ``AddHs()`` usually appends hydrogens, but molecules built from
+    SMILES with explicit H (``removeHs=False``) can place them at arbitrary
+    indices.  Downstream code assumes heavy-atom indices match between the
+    full molecule and ``Chem.RemoveHs(mol)``.
+    """
+    if mol is None:
+        return None, []
+
+    heavy = [a.GetIdx() for a in mol.GetAtoms() if a.GetAtomicNum() != 1]
+    hydrogens = [a.GetIdx() for a in mol.GetAtoms() if a.GetAtomicNum() == 1]
+    new_order = heavy + hydrogens
+    if new_order == list(range(mol.GetNumAtoms())):
+        return mol, heavy
+    return Chem.RenumberAtoms(mol, new_order), heavy
+
+
 class ChiralBase:
     def __init__(self, mol=None, mol_wo_Hs=None, max_conf_num=5, sign_eps=1e-4, CIP=True):
+        mol, self.heavy_atom_indices = normalize_mol_atom_order(mol)
+        self.num_heavy_atoms = len(self.heavy_atom_indices)
+
         # with Hs
         self.mol = mol
         self.mol_wo_Hs = Chem.RemoveHs(mol) if mol_wo_Hs is None else mol_wo_Hs
@@ -24,23 +46,35 @@ class ChiralBase:
             if len(self.coordinates) >= max_conf_num:
                 break
         # self.conformer = mol.GetConformer()
-        if CIP:
-            # dict is OK
+        self.CIP_list = self._build_cip_list(CIP)
+
+    def _build_cip_list(self, CIP=True):
+        canonical_ranks = list(Chem.CanonicalRankAtoms(
+            self.mol, breakTies=False, includeChirality=True, includeIsotopes=True))
+
+        if not CIP:
+            return canonical_ranks
+
+        cip_list = defaultdict(lambda: -1)
+        try:
             # AssignStereochemistry may fail anyway, try AssignStereochemistryFrom3D
-            try:
-                Chem.AssignStereochemistryFrom3D(self.mol_wo_Hs)
-                self.CIP_list = defaultdict(lambda: -1)
-                for atom in self.mol_wo_Hs.GetAtoms():
-                    self.CIP_list[atom.GetIdx()] = int(atom.GetProp('_CIPRank'))
-            except:
-                warnings.warn("Fail to assign CIPs, use CanonicalRankAtoms instead.")
-                # just an order, not CIP, unable to relate to R/S
-                self.CIP_list = list(Chem.CanonicalRankAtoms(
-                    mol, breakTies=False, includeChirality=True, includeIsotopes=True))
-        else:
-            # just an order, not CIP, unable to relate to R/S
-            self.CIP_list = list(Chem.CanonicalRankAtoms(
-                mol, breakTies=False, includeChirality=True, includeIsotopes=True))
+            Chem.AssignStereochemistryFrom3D(self.mol_wo_Hs)
+            for atom in self.mol_wo_Hs.GetAtoms():
+                cip_list[atom.GetIdx()] = int(atom.GetProp('_CIPRank'))
+        except Exception:
+            warnings.warn("Fail to assign CIPs, use CanonicalRankAtoms instead.")
+            return canonical_ranks
+
+        # Heavy-atom CIP ranks live on mol_wo_Hs; fill hydrogen ranks from the
+        # full molecule so neighbor lookups never alias a heavy-atom rank.
+        for idx in range(self.num_heavy_atoms, self.mol.GetNumAtoms()):
+            cip_list[idx] = canonical_ranks[idx]
+        return cip_list
+
+    def get_cip_rank(self, atom_idx):
+        if isinstance(self.CIP_list, list):
+            return self.CIP_list[atom_idx]
+        return self.CIP_list[atom_idx]
 
     # find chiral atoms
     # with Hs, may get false center C "?"
@@ -51,28 +85,34 @@ class ChiralBase:
     
     # find spiral atoms
     def find_spiral_atoms(self):
-        # find all atoms shared by two rings
-        # for some molecules with Hs, "RingInfo not initialized"
+        # Topology is defined on heavy atoms; indices match mol_wo_Hs after
+        # normalize_mol_atom_order().
         ri = self.mol_wo_Hs.GetRingInfo()
+        atoms_wo_hs = self.mol_wo_Hs.GetAtoms()
+        ssr = Chem.GetSymmSSSR(self.mol_wo_Hs)
         spi_pot = []
-        for atom in self.atoms:
-            if ri.NumAtomRings(atom.GetIdx()) == 2:
-                spi_pot.append(atom.GetIdx())
+        for idx in self.heavy_atom_indices:
+            if ri.NumAtomRings(idx) == 2:
+                spi_pot.append(idx)
 
         # delete all atoms who share completely same rings with their neighbors
-        ssr = Chem.GetSymmSSSR(self.mol)
         spi = deepcopy(spi_pot)
         for j in spi_pot:
             j_ring = []
             for ring in ssr:
                 if j in ring:
                     j_ring.append(list(ring))
+            if len(j_ring) < 2:
+                if j in spi:
+                    spi.remove(j)
+                continue
             j_ring = j_ring[0] + j_ring[1]
 
-            neighbors = [atom.GetIdx() for atom in self.atoms[j].GetNeighbors()]
+            neighbors = [atom.GetIdx() for atom in atoms_wo_hs[j].GetNeighbors()]
             for k in neighbors:
                 if j_ring.count(k) == 2:
-                    spi.remove(j)
+                    if j in spi:
+                        spi.remove(j)
                     break
         return spi
 

@@ -20,7 +20,7 @@ class ChiralCenter(ChiralBase):
                 atom = self.atoms[i]
                 neighbors = atom.GetNeighbors()
                 # (id_, rank_), sort by rank, increasing
-                neigh_id_rank = [(atom_.GetIdx(), self.CIP_list[atom_.GetIdx()]) for atom_ in neighbors]
+                neigh_id_rank = [(atom_.GetIdx(), self.get_cip_rank(atom_.GetIdx())) for atom_ in neighbors]
                 neigh_id_rank = sorted(neigh_id_rank, key=lambda x: x[1])
 
                 # center, atom 1, 2, 3, 4

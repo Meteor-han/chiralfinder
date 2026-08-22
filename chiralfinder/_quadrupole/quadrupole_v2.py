@@ -203,10 +203,10 @@ class ChiralAxialType2(ChiralBase):
                                 atom_out_nei.append(nei.GetIdx())  # outside neighbors of the end atoms
                         # the same or not
                         if len(atom_out_nei) == 2:
-                            if self.CIP_list[atom_out_nei[0]] > self.CIP_list[atom_out_nei[1]]:
+                            if self.get_cip_rank(atom_out_nei[0]) > self.get_cip_rank(atom_out_nei[1]):
                                 end_atom = [idx, atom_out_nei]  # one end atom and its neighbors
                                 chain_boundary.append(end_atom)
-                            elif self.CIP_list[atom_out_nei[0]] < self.CIP_list[atom_out_nei[1]]:
+                            elif self.get_cip_rank(atom_out_nei[0]) < self.get_cip_rank(atom_out_nei[1]):
                                 atom_out_nei = atom_out_nei[::-1]
                                 end_atom = [idx, atom_out_nei]  # another end atom and its neighbors
                                 chain_boundary.append(end_atom)

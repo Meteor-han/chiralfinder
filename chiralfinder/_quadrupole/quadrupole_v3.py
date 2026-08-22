@@ -121,9 +121,9 @@ class ChiralAxialType3(ChiralBase):
 
                 # whether two different atoms
                 if len(end_out_nei) == 2:
-                    if self.CIP_list[end_out_nei[0]] > self.CIP_list[end_out_nei[1]]:
+                    if self.get_cip_rank(end_out_nei[0]) > self.get_cip_rank(end_out_nei[1]):
                         ene_end.append([end_atom_idx, end_out_nei])
-                    elif self.CIP_list[end_out_nei[0]] < self.CIP_list[end_out_nei[1]]:
+                    elif self.get_cip_rank(end_out_nei[0]) < self.get_cip_rank(end_out_nei[1]):
                         ene_end.append([end_atom_idx, end_out_nei[::-1]])
 
                 if len(ene_end) == 2:
