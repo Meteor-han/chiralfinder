@@ -6,6 +6,7 @@ from .quadrupole_v4 import ChiralAxialType4
 from .quadrupole_v5 import ChiralAxialType5
 from .quadrupole_v6 import ChiralAxialType6
 from .run import ChiralFinder
+from .quadrupole_utils import normalize_mol_atom_order
 
 
 __all__ = (
@@ -16,5 +17,6 @@ __all__ = (
     "ChiralAxialType3",
     "ChiralAxialType4",
     "ChiralAxialType5",
-    "ChiralAxialType6"
+    "ChiralAxialType6",
+    normalize_mol_atom_order
 )

@@ -21,8 +21,8 @@ def normalize_mol_atom_order(mol):
     hydrogens = [a.GetIdx() for a in mol.GetAtoms() if a.GetAtomicNum() == 1]
     new_order = heavy + hydrogens
     if new_order == list(range(mol.GetNumAtoms())):
-        return mol, heavy
-    return Chem.RenumberAtoms(mol, new_order), heavy
+        return mol, list(range(len(heavy)))
+    return Chem.RenumberAtoms(mol, new_order), list(range(len(heavy)))
 
 
 class ChiralBase:
