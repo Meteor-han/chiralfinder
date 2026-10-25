@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 
 .vscode/
+/update_pypi.md

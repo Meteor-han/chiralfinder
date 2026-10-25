@@ -65,10 +65,10 @@ class ChiralBase:
             warnings.warn("Fail to assign CIPs, use CanonicalRankAtoms instead.")
             return canonical_ranks
 
-        # Heavy-atom CIP ranks live on mol_wo_Hs; fill hydrogen ranks from the
-        # full molecule so neighbor lookups never alias a heavy-atom rank.
+        # Canonical ranks and heavy-atom CIP ranks are on different scales.
+        # Keep hydrogens below every heavy atom after atom-order normalization.
         for idx in range(self.num_heavy_atoms, self.mol.GetNumAtoms()):
-            cip_list[idx] = canonical_ranks[idx]
+            cip_list[idx] = -1
         return cip_list
 
     def get_cip_rank(self, atom_idx):
